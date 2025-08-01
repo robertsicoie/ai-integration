@@ -1,6 +1,6 @@
 import os
 import glob
-from dotenv import load_dotenv
+
 import gradio as gr
 
 from langchain.document_loaders import TextLoader, DirectoryLoader
@@ -8,12 +8,11 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.chat_models import ChatOllama
 from langchain_chroma import Chroma
 
-import numpy as np
-from sklearn.manifold import TSNE
-import plotly.graph_objects as go
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.embeddings import HuggingFaceEmbeddings
+
+from langchain_core.callbacks import StdOutCallbackHandler
 
 MODEL = "llama3.2:1b"
 db_name = "vector_db_ollama"
@@ -60,20 +59,23 @@ dimensions = len(sample_embedding)
 print(f"Sample embedding dimensions: {dimensions}")
 
 llm = ChatOllama(model_name=MODEL, temperature=0.7)
+# or with ChatOpenAI
+# llm = ChatOpenAI(temperature=0.7, model_name='llama3.2', base_url='http://localhost:11434/v1', api_key='ollama')
 memory = ConversationBufferMemory(
     memory_key="chat_history", 
     return_messages=True)
-retriever = vectorstore.as_retriever()
+retriever = vectorstore.as_retriever(search_kwargs={"k": 25})
 chain = ConversationalRetrievalChain.from_llm(
     llm=llm,
     retriever=retriever,
-    memory=memory
+    memory=memory,
+    callbacks=[StdOutCallbackHandler()]  # Optional: to see the output in the console
 )
 
-query = "Can you describe Insurellm in a few sentences?"
-result = chain.invoke({"question": query})
-print(f"Query: {query}")
-print(f"Answer: {result['answer']}")
+# query = "Can you describe Insurellm in a few sentences?"
+# result = chain.invoke({"question": query})
+# print(f"Query: {query}")
+# print(f"Answer: {result['answer']}")
 
 def chat(message, history):
     response = chain.invoke({"question": message})

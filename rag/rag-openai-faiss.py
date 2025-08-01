@@ -6,7 +6,8 @@ import gradio as gr
 from langchain.document_loaders import TextLoader, DirectoryLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_chroma import Chroma
+
+from langchain.vectorstores import FAISS
 
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -42,21 +43,14 @@ print(f"Found {len(doc_types)} document types: {', '.join(doc_types)}")
 
 embeddings = OpenAIEmbeddings()
 
-if os.path.exists(db_name):
-    Chroma(persist_directory=db_name, embedding_function=embeddings).delete_collection()
-
-vectorstore = Chroma.from_documents(
+vectorstore = FAISS.from_documents(
     documents=chunks,
-    embedding=embeddings,
-    persist_directory=db_name
-)
+    embedding=embeddings
+) # FAISS does not persist on disk like Chroma
 
-collection = vectorstore._collection
-print(f"Collection '{collection.name}' created with {collection.count()} documents.")
-
-sample_embedding = collection.get(limit=1, include=["embeddings"])["embeddings"][0]
-dimensions = len(sample_embedding)
-print(f"Sample embedding dimensions: {dimensions}")
+vectors_total = vectorstore.index.ntotal
+dimensions = vectorstore.index.d
+print(f"FAISS index created with {vectors_total} vectors, each of dimension {dimensions}.")
 
 # 1. Create the LLM
 llm = ChatOpenAI(model_name=MODEL, temperature=0.7)
@@ -65,7 +59,7 @@ memory = ConversationBufferMemory(
     memory_key="chat_history", 
     return_messages=True)
 # 3. Create the retriever
-retriever = vectorstore.as_retriever(search_kwargs={"k": 200})
+retriever = vectorstore.as_retriever()
 # 4. Create the chain
 chain = ConversationalRetrievalChain.from_llm(
     llm=llm,
