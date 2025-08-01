@@ -1,0 +1,10 @@
+python-dotenv
+gradio
+langchain
+langchain_community
+langchain-core
+langchain-openai
+langchain-chroma
+langchain-huggingface
+chromadb
+sentence-transformers
