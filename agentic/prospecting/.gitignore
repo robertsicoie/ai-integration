@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.env
+prospect_data.db
+*.egg-info/
+dist/
+build/
+.playwright/
