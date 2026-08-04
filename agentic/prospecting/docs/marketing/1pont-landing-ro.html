@@ -1,0 +1,1018 @@
+<title>1pont — Descoperă-ți Scorul de Prospectare Locală</title>
+<style>
+  /* ── TOKENS ──────────────────────────────────────────── */
+  :root {
+    --bg:        #07101E;
+    --surface:   #0C1729;
+    --card:      #10203A;
+    --border:    #1C3050;
+    --flame:     #FF4D25;
+    --ice:       #12C4A2;
+    --warn:      #D4900F;
+    --text:      #EDE9E1;
+    --muted:     #5A738A;
+    --dim:       #2A3D56;
+    --font-d:    'Helvetica Neue','Arial Black',Arial,sans-serif;
+    --font-b:    system-ui,-apple-system,sans-serif;
+    --font-m:    'SF Mono','Consolas','Courier New',monospace;
+    --radius:    12px;
+    --max:       1080px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg:      #F3F0EB;
+      --surface: #FFFFFF;
+      --card:    #FFFFFF;
+      --border:  #DDD8D0;
+      --text:    #0D1829;
+      --muted:   #7A8FAD;
+      --dim:     #C8C2BA;
+    }
+  }
+  :root[data-theme="dark"]  { --bg:#07101E;--surface:#0C1729;--card:#10203A;--border:#1C3050;--text:#EDE9E1;--muted:#5A738A;--dim:#2A3D56; }
+  :root[data-theme="light"] { --bg:#F3F0EB;--surface:#FFFFFF;--card:#FFFFFF;--border:#DDD8D0;--text:#0D1829;--muted:#7A8FAD;--dim:#C8C2BA; }
+
+  /* ── RESET ────────────────────────────────────────────── */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:var(--font-b);font-size:16px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%}
+  a{color:var(--flame);text-decoration:none}
+
+  /* ── UTILITIES ────────────────────────────────────────── */
+  .wrap{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:24px}
+  .label{font-family:var(--font-m);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--flame)}
+  .label-muted{font-family:var(--font-m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .display{font-family:var(--font-d);font-weight:900;letter-spacing:-.04em;line-height:1.0;text-wrap:balance}
+  .d-xl{font-size:clamp(40px,6.5vw,80px)}
+  .d-lg{font-size:clamp(30px,4.5vw,56px)}
+  .d-md{font-size:clamp(22px,3vw,38px)}
+  .accent{color:var(--flame)}
+  .mint{color:var(--ice)}
+  .rule{width:44px;height:3px;background:var(--flame);border-radius:2px;margin:20px 0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-family:var(--font-m);font-size:11px;letter-spacing:.08em}
+  .pill-flame{background:rgba(255,77,37,.12);color:var(--flame);border:1px solid rgba(255,77,37,.28)}
+  .pill-ice{background:rgba(18,196,162,.1);color:var(--ice);border:1px solid rgba(18,196,162,.22)}
+  .pill-warn{background:rgba(212,144,15,.1);color:var(--warn);border:1px solid rgba(212,144,15,.25)}
+  .check{width:20px;height:20px;border-radius:50%;background:rgba(18,196,162,.15);border:1px solid rgba(18,196,162,.3);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--ice);flex-shrink:0}
+  .xmark{width:20px;height:20px;border-radius:50%;background:rgba(255,77,37,.1);border:1px solid rgba(255,77,37,.25);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--flame);flex-shrink:0}
+  .fn{font-variant-numeric:tabular-nums}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ── NAV ──────────────────────────────────────────────── */
+  nav{
+    position:sticky;top:0;z-index:100;
+    background:rgba(7,16,30,.9);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  [data-theme="light"] nav{background:rgba(243,240,235,.92)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+  .nav-logo{display:flex;align-items:center;gap:10px}
+  .pont-dot{width:12px;height:12px;border-radius:50%;background:var(--flame);position:relative;flex-shrink:0}
+  .pont-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(255,77,37,.3)}
+  .nav-name{font-family:var(--font-d);font-weight:900;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
+  .nav-cta{background:var(--flame);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-b);white-space:nowrap;transition:opacity .15s}
+  .nav-cta:hover{opacity:.85}
+  .theme-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--muted);cursor:pointer;font-size:13px;transition:border-color .15s}
+  .theme-btn:hover{border-color:var(--flame);color:var(--flame)}
+
+  /* ── HERO ─────────────────────────────────────────────── */
+  .hero{padding:80px 0 60px;text-align:center}
+  .hero .label{margin-bottom:20px;display:block}
+  .hero h1{margin-bottom:20px}
+  .hero-sub{font-size:clamp(15px,1.6vw,19px);color:var(--muted);max-width:580px;margin-inline:auto;margin-bottom:36px}
+  .hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--flame);color:#fff;border:none;border-radius:12px;padding:18px 36px;font-size:17px;font-weight:700;cursor:pointer;font-family:var(--font-b);transition:opacity .15s,transform .15s}
+  .hero-cta:hover{opacity:.88;transform:translateY(-1px)}
+  .hero-cta-sub{font-size:12px;color:var(--muted);margin-top:12px}
+  .hero-stats{display:flex;gap:0;justify-content:center;margin-top:52px;border-top:1px solid var(--border);padding-top:36px;flex-wrap:wrap}
+  .hero-stat{flex:1;min-width:140px;padding:0 28px;border-right:1px solid var(--border);text-align:center}
+  .hero-stat:last-child{border-right:none}
+  .hs-num{font-family:var(--font-d);font-weight:900;font-size:clamp(28px,3.5vw,44px);letter-spacing:-.04em;line-height:1}
+  .hs-label{font-family:var(--font-m);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+  /* ── PROBLEM SECTION ──────────────────────────────────── */
+  .problem{padding:64px 0;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .section-eyebrow{text-align:center;margin-bottom:12px}
+  .section-head{text-align:center;margin-bottom:8px}
+  .section-sub{text-align:center;color:var(--muted);font-size:clamp(14px,1.4vw,17px);max-width:560px;margin:0 auto 48px}
+  .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .pain-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px 28px}
+  .pain-num{font-family:var(--font-d);font-weight:900;letter-spacing:-.05em;line-height:1;font-size:clamp(40px,5vw,68px)}
+  .pain-desc{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .pain-note{font-size:12px;color:var(--dim);margin-top:8px;font-family:var(--font-m)}
+  @media(max-width:700px){.pain-grid{grid-template-columns:1fr}}
+
+  /* ── SCORE INTRO ──────────────────────────────────────── */
+  .score-intro{padding:72px 0;text-align:center}
+  .steps-row{display:flex;gap:0;justify-content:center;margin-top:48px;flex-wrap:wrap}
+  .step-item{flex:1;min-width:200px;max-width:280px;padding:0 24px;text-align:center;position:relative}
+  .step-item:not(:last-child)::after{content:'→';position:absolute;right:-8px;top:24px;color:var(--dim);font-size:18px}
+  .step-icon{width:52px;height:52px;border-radius:14px;background:rgba(255,77,37,.1);border:1px solid rgba(255,77,37,.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px}
+  .step-title{font-weight:700;font-size:15px;margin-bottom:6px}
+  .step-desc{font-size:13px;color:var(--muted)}
+
+  /* ── QUIZ WIDGET ──────────────────────────────────────── */
+  .quiz-section{padding:0 0 80px}
+  .quiz-wrap{
+    max-width:720px;margin-inline:auto;
+    background:var(--card);border:1px solid var(--border);border-radius:20px;
+    overflow:hidden;
+  }
+  .quiz-head{
+    background:linear-gradient(135deg,var(--flame) 0%,#c93b15 100%);
+    padding:28px 36px;display:flex;align-items:center;justify-content:space-between;
+  }
+  .quiz-head-title{color:#fff;font-weight:700;font-size:17px}
+  .quiz-head-sub{color:rgba(255,255,255,.7);font-size:13px;margin-top:3px}
+  .quiz-progress-bar{height:4px;background:rgba(255,255,255,.25);border-radius:2px;margin-top:14px;overflow:hidden}
+  .quiz-progress-fill{height:100%;background:#fff;border-radius:2px;transition:width .35s ease}
+  .quiz-body{padding:36px}
+  .q-step{display:none}
+  .q-step.active{display:block}
+  .q-label{font-family:var(--font-m);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--flame);margin-bottom:8px}
+  .q-text{font-family:var(--font-d);font-weight:900;font-size:clamp(18px,2.5vw,26px);letter-spacing:-.03em;line-height:1.2;margin-bottom:24px;text-wrap:balance}
+  .q-options{display:flex;flex-direction:column;gap:10px}
+  .q-option{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 18px;border-radius:10px;
+    border:1.5px solid var(--border);background:var(--surface);
+    cursor:pointer;transition:border-color .15s,background .15s;
+    font-size:15px;text-align:left;font-family:var(--font-b);color:var(--text);
+    width:100%;
+  }
+  .q-option:hover{border-color:var(--flame);background:rgba(255,77,37,.05)}
+  .q-option.selected{border-color:var(--flame);background:rgba(255,77,37,.08)}
+  .q-option-icon{width:32px;height:32px;border-radius:8px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .q-option-text{flex:1}
+  .q-option-label{font-size:12px;color:var(--muted)}
+  .q-multi-hint{font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic}
+  .q-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px}
+  .q-back{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:10px 20px;cursor:pointer;font-size:14px;font-family:var(--font-b);transition:border-color .15s}
+  .q-back:hover{border-color:var(--flame);color:var(--flame)}
+  .q-next{background:var(--flame);color:#fff;border:none;border-radius:8px;padding:12px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font-b);transition:opacity .15s}
+  .q-next:hover{opacity:.88}
+  .q-next:disabled{opacity:.4;cursor:not-allowed}
+  .q-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .q-field label{font-size:13px;color:var(--muted);font-family:var(--font-m);letter-spacing:.06em;font-size:11px;text-transform:uppercase}
+  .q-input{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:12px 16px;color:var(--text);font-size:15px;font-family:var(--font-b);outline:none;transition:border-color .15s;width:100%}
+  .q-input::placeholder{color:var(--dim)}
+  .q-input:focus{border-color:var(--flame)}
+  .results{display:none;padding:36px}
+  .results.show{display:block}
+  .score-display{text-align:center;margin-bottom:36px}
+  .score-ring{width:140px;height:140px;margin:0 auto 16px;position:relative}
+  .score-ring canvas{width:140px;height:140px}
+  .score-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .score-val{font-family:var(--font-d);font-weight:900;font-size:40px;letter-spacing:-.05em;line-height:1}
+  .score-unit{font-family:var(--font-m);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .score-title{font-family:var(--font-d);font-weight:900;font-size:22px;letter-spacing:-.03em;margin-bottom:6px}
+  .score-summary{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto}
+  .gap-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:28px 0;text-align:center}
+  .gap-ch{padding:14px 8px;border-radius:10px;border:1.5px solid var(--border);font-size:11px}
+  .gap-ch.has{border-color:var(--ice);background:rgba(18,196,162,.07)}
+  .gap-ch.missing{border-color:rgba(255,77,37,.3);background:rgba(255,77,37,.06)}
+  .gap-ch-icon{font-size:22px;margin-bottom:6px}
+  .gap-ch-name{font-size:10px;font-family:var(--font-m);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .gap-badge{font-size:9px;font-family:var(--font-m);letter-spacing:.06em;padding:2px 8px;border-radius:100px}
+  .gap-badge.has{background:rgba(18,196,162,.15);color:var(--ice)}
+  .gap-badge.missing{background:rgba(255,77,37,.15);color:var(--flame)}
+  .insights{display:flex;flex-direction:column;gap:12px;margin:24px 0}
+  .insight{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-size:14px}
+  .insight strong{color:var(--text)}
+  .insight-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+  .results-cta{background:var(--flame);color:#fff;border:none;border-radius:12px;padding:16px 32px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font-b);width:100%;margin-top:20px;transition:opacity .15s}
+  .results-cta:hover{opacity:.88}
+  .results-note{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+  @media(max-width:580px){.gap-grid{grid-template-columns:repeat(3,1fr)}.quiz-body,.results{padding:24px}}
+
+  /* ── CHANNELS ─────────────────────────────────────────── */
+  .channels{padding:80px 0;border-top:1px solid var(--border)}
+  .ch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:48px}
+  .ch-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;transition:border-color .2s}
+  .ch-card:hover{border-color:var(--flame)}
+  .ch-card.featured{border-color:rgba(255,77,37,.4);position:relative}
+  .ch-card.featured::before{content:'NOU';position:absolute;top:-1px;right:14px;background:var(--flame);color:#fff;font-family:var(--font-m);font-size:9px;letter-spacing:.1em;padding:3px 8px;border-radius:0 0 6px 6px}
+  .ch-emoji{font-size:32px;margin-bottom:14px;display:block}
+  .ch-name{font-weight:800;font-size:15px;margin-bottom:6px}
+  .ch-desc{font-size:12px;color:var(--muted);line-height:1.5}
+  .ch-stat{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+  .ch-stat-num{font-family:var(--font-d);font-weight:900;font-size:20px;letter-spacing:-.04em}
+  .ch-stat-label{font-size:10px;font-family:var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+  @media(max-width:800px){.ch-grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:520px){.ch-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* ── COMPARISON ───────────────────────────────────────── */
+  .comparison{padding:80px 0;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .comp-table-wrap{overflow-x:auto;margin-top:40px}
+  table.comp{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+  .comp th{padding:12px 16px;text-align:center;font-family:var(--font-m);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+  .comp th:first-child{text-align:left}
+  .comp th.hl{color:var(--flame)}
+  .comp td{padding:13px 16px;text-align:center;border-bottom:1px solid rgba(28,48,80,.5);color:var(--muted);vertical-align:middle}
+  .comp td:first-child{text-align:left;color:var(--text);font-weight:600}
+  .comp tr:last-child td{border-bottom:none}
+  .comp tr.hl-row td{background:rgba(255,77,37,.05)}
+  .comp tr.hl-row td:first-child{color:var(--flame)}
+  .sym-yes{color:var(--ice);font-size:16px}
+  .sym-no{color:var(--border);font-size:14px}
+  .sym-soon{font-family:var(--font-m);font-size:9px;letter-spacing:.06em;color:var(--warn)}
+
+  /* ── PRICING ──────────────────────────────────────────── */
+  .pricing{padding:80px 0}
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 28px;position:relative}
+  .price-card.featured{border-color:var(--flame)}
+  .price-card.featured::before{content:'Cel mai popular';position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-50%);background:var(--flame);color:#fff;font-size:11px;font-family:var(--font-m);letter-spacing:.08em;padding:4px 14px;border-radius:100px;white-space:nowrap}
+  .price-tier{font-family:var(--font-m);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .price-amt{font-family:var(--font-d);font-weight:900;font-size:clamp(40px,5vw,60px);letter-spacing:-.05em;line-height:1}
+  .price-period{font-size:14px;color:var(--muted);margin-bottom:20px}
+  .price-desc{font-size:13px;color:var(--muted);margin-bottom:20px;min-height:40px}
+  .price-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+  .price-features li{display:flex;align-items:center;gap:10px;font-size:13px}
+  .price-btn{width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font-b);transition:opacity .15s;border:none}
+  .price-btn-flame{background:var(--flame);color:#fff}
+  .price-btn-outline{background:transparent;color:var(--flame);border:1.5px solid var(--flame)}
+  .price-btn:hover{opacity:.85}
+  @media(max-width:720px){.price-grid{grid-template-columns:1fr}}
+
+  /* ── FAQ ──────────────────────────────────────────────── */
+  .faq{padding:80px 0;border-top:1px solid var(--border)}
+  .faq-list{max-width:720px;margin:40px auto 0;display:flex;flex-direction:column;gap:2px}
+  .faq-item{border-bottom:1px solid var(--border)}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 0;cursor:pointer;gap:16px}
+  .faq-q-text{font-weight:600;font-size:15px}
+  .faq-icon{color:var(--flame);font-size:20px;flex-shrink:0;transition:transform .2s}
+  .faq-item.open .faq-icon{transform:rotate(45deg)}
+  .faq-a{display:none;padding-bottom:18px;font-size:14px;color:var(--muted);line-height:1.7}
+  .faq-item.open .faq-a{display:block}
+
+  /* ── FINAL CTA ────────────────────────────────────────── */
+  .final-cta{padding:96px 0;text-align:center;background:var(--surface);border-top:1px solid var(--border)}
+  .final-cta .rule{margin-inline:auto}
+  .final-input-row{display:flex;gap:10px;max-width:440px;margin:28px auto 0}
+  .final-input{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-size:15px;font-family:var(--font-b);outline:none;transition:border-color .15s}
+  .final-input::placeholder{color:var(--dim)}
+  .final-input:focus{border-color:var(--flame)}
+  .final-btn{background:var(--flame);color:#fff;border:none;border-radius:10px;padding:13px 24px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font-b);white-space:nowrap;transition:opacity .15s}
+  .final-btn:hover{opacity:.88}
+  @media(max-width:480px){.final-input-row{flex-direction:column}}
+
+  /* ── FOOTER ───────────────────────────────────────────── */
+  footer{padding:28px 0;border-top:1px solid var(--border)}
+  footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .foot-note{font-size:12px;color:var(--muted)}
+</style>
+
+<!-- ───────────────────────── NAV ────── -->
+<nav>
+  <div class="wrap">
+    <div class="nav-logo">
+      <div class="pont-dot"></div>
+      <span class="nav-name">1pont</span>
+      <span class="pill pill-flame" style="margin-left:8px">Beta</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="theme-btn" id="theme-btn" title="Schimbă tema">◐</button>
+      <button class="nav-cta" onclick="document.getElementById('quiz-anchor').scrollIntoView({behavior:'smooth'})">Obține Scorul Meu →</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ───────────────────────── HERO ────── -->
+<section class="hero">
+  <div class="wrap">
+    <span class="label">Evaluare gratuită de 2 minute</span>
+    <h1 class="display d-xl">Ajungi la <span class="accent">1 din 5</span><br>dintre cei mai buni prospecți ai tăi?</h1>
+    <p class="hero-sub">Majoritatea instrumentelor de prospectare acoperă emailul și LinkedIn — și se opresc acolo. Instagram, Facebook, WhatsApp și listările locale de afaceri sunt acolo unde concurenții tăi nu sunt. Află exact ce îți lipsește în 2 minute.</p>
+    <button class="hero-cta" onclick="document.getElementById('quiz-anchor').scrollIntoView({behavior:'smooth'})">
+      <span>📊</span> Obțin Scorul Meu Gratuit de Prospectare
+    </button>
+    <div class="hero-cta-sub">Fără cont · Rezultate în 60 de secunde · Gratuit pentru totdeauna</div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hs-num accent">7–20%</div>
+        <div class="hs-label">conversie prin Instagram DM</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-num mint">200M+</div>
+        <div class="hs-label">listări locale de afaceri</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-num" style="color:var(--warn)">2B+</div>
+        <div class="hs-label">utilizatori lunari WhatsApp</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hs-num" style="color:var(--text)">< 1%</div>
+        <div class="hs-label">afaceri care folosesc aceste canale</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── PROBLEM ────── -->
+<section class="problem">
+  <div class="wrap">
+    <div class="section-eyebrow"><span class="label">Problema</span></div>
+    <h2 class="display d-lg section-head">Instrumentele tale sunt scumpe<br>și <span class="accent">pe jumătate oarbe.</span></h2>
+    <p class="section-sub">Instrumentele care domină această categorie au fost construite pentru LinkedIn și email — în 2019. Lumea a evoluat. Ele nu.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-num accent">38%</div>
+        <div class="pain-desc">rata reală de bounce pe contactele Apollo „verificate" — teste independente, 2026</div>
+        <div class="pain-note">503 recenzii G2 menționează acuratețea datelor</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-num" style="color:var(--warn)">$800–2K</div>
+        <div class="pain-desc">pe lună pentru un set de 5 instrumente care nu acoperă deloc Instagram, Facebook sau WhatsApp</div>
+        <div class="pain-note">Apollo + Clay + Instantly + Lemlist + lipici</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-num" style="color:var(--text)">23%</div>
+        <div class="pain-desc">dintre utilizatorii de automatizare LinkedIn au contul restricționat în 90 de zile</div>
+        <div class="pain-note">LinkedIn a șters pagina companiei Apollo.io în 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── SCORE INTRO ────── -->
+<section class="score-intro">
+  <div class="wrap">
+    <span class="label" style="display:block;text-align:center;margin-bottom:12px">Scorul tău de prospectare</span>
+    <h2 class="display d-lg" style="text-align:center;margin-bottom:10px">Descoperă exact<br>ce îți <span class="accent">lipsește.</span></h2>
+    <p class="section-sub">Răspunde la 7 întrebări. Obține o analiză personalizată care arată ce canale folosești, pe care nu, și cât te costă asta în contracte ratate.</p>
+    <div class="steps-row">
+      <div class="step-item">
+        <div class="step-icon">📝</div>
+        <div class="step-title">Răspunde la 7 întrebări</div>
+        <div class="step-desc">Despre instrumentele, canalele și frustrările tale actuale</div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">📊</div>
+        <div class="step-title">Obține-ți scorul</div>
+        <div class="step-desc">Un Scor de Prospectare de la 0 la 100 cu o hartă a lipsurilor canal cu canal</div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">🎯</div>
+        <div class="step-title">Vezi calea ta</div>
+        <div class="step-desc">Recomandări personalizate bazate pe situația ta specifică</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── QUIZ ────── -->
+<div id="quiz-anchor" style="scroll-margin-top:72px"></div>
+<section class="quiz-section">
+  <div class="wrap">
+    <div class="quiz-wrap">
+      <div class="quiz-head">
+        <div>
+          <div class="quiz-head-title">Evaluarea Scorului de Prospectare Locală</div>
+          <div class="quiz-head-sub">2 minute · Gratuit · Rezultate personalizate</div>
+        </div>
+        <span class="pill" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.2)" id="q-counter">Î1 din 7</span>
+        <div class="quiz-progress-bar" style="flex:1;margin-left:20px;max-width:200px">
+          <div class="quiz-progress-fill" id="q-progress" style="width:14%"></div>
+        </div>
+      </div>
+
+      <div class="quiz-body" id="quiz-body">
+
+        <!-- Q1: Canale -->
+        <div class="q-step active" data-q="1">
+          <div class="q-label">Întrebarea 1 din 7</div>
+          <div class="q-text">Ce canale folosești <em>în prezent</em> pentru prospectare?</div>
+          <div class="q-multi-hint">Selectează toate opțiunile valabile</div>
+          <div class="q-options" id="q1-opts">
+            <button class="q-option" data-val="email" data-q="1" type="button">
+              <div class="q-option-icon">✉️</div>
+              <div class="q-option-text"><div>Secvențe de email</div><div class="q-option-label">Email rece, campanii drip</div></div>
+            </button>
+            <button class="q-option" data-val="linkedin" data-q="1" type="button">
+              <div class="q-option-icon">💼</div>
+              <div class="q-option-text"><div>LinkedIn DM / cereri de conectare</div><div class="q-option-label">Sales Navigator, prospectare LinkedIn</div></div>
+            </button>
+            <button class="q-option" data-val="instagram" data-q="1" type="button">
+              <div class="q-option-icon">📸</div>
+              <div class="q-option-text"><div>Instagram DM</div><div class="q-option-label">Mesaje directe către prospecți</div></div>
+            </button>
+            <button class="q-option" data-val="facebook" data-q="1" type="button">
+              <div class="q-option-icon">💬</div>
+              <div class="q-option-text"><div>Facebook Messenger</div><div class="q-option-label">DM-uri de pe pagini de business</div></div>
+            </button>
+            <button class="q-option" data-val="whatsapp" data-q="1" type="button">
+              <div class="q-option-icon">📲</div>
+              <div class="q-option-text"><div>WhatsApp</div><div class="q-option-label">Mesaje WhatsApp Business</div></div>
+            </button>
+            <button class="q-option" data-val="maps" data-q="1" type="button">
+              <div class="q-option-icon">🗺️</div>
+              <div class="q-option-text"><div>Date locale de afaceri</div><div class="q-option-label">Lead-uri din listări publice de afaceri</div></div>
+            </button>
+          </div>
+          <div class="q-nav">
+            <div></div>
+            <button class="q-next" id="next-1">Următorul →</button>
+          </div>
+        </div>
+
+        <!-- Q2: Buget -->
+        <div class="q-step" data-q="2">
+          <div class="q-label">Întrebarea 2 din 7</div>
+          <div class="q-text">Cât cheltuiești lunar pe instrumente de prospectare?</div>
+          <div class="q-options">
+            <button class="q-option" data-val="free" data-q="2" type="button"><div class="q-option-icon">🆓</div><div>Doar instrumente gratuite</div></button>
+            <button class="q-option" data-val="low" data-q="2" type="button"><div class="q-option-icon">💵</div><div>Sub $100/lună</div></button>
+            <button class="q-option" data-val="mid" data-q="2" type="button"><div class="q-option-icon">💰</div><div>$100 – $400/lună</div></button>
+            <button class="q-option" data-val="high" data-q="2" type="button"><div class="q-option-icon">💸</div><div>$400 – $1.000/lună</div></button>
+            <button class="q-option" data-val="max" data-q="2" type="button"><div class="q-option-icon">🔥</div><div class="q-option-text"><div>Peste $1.000/lună</div><div class="q-option-label">Mai multe instrumente, mai multe licențe</div></div></button>
+          </div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(1)">← Înapoi</button>
+            <button class="q-next" id="next-2" disabled>Următorul →</button>
+          </div>
+        </div>
+
+        <!-- Q3: Țintă -->
+        <div class="q-step" data-q="3">
+          <div class="q-label">Întrebarea 3 din 7</div>
+          <div class="q-text">Care sunt principalele tale ținte de prospectare?</div>
+          <div class="q-options">
+            <button class="q-option" data-val="local" data-q="3" type="button"><div class="q-option-icon">🏪</div><div class="q-option-text"><div>Afaceri locale de servicii</div><div class="q-option-label">Restaurante, saloane, constructori, stomatologie, imobiliare</div></div></button>
+            <button class="q-option" data-val="b2b" data-q="3" type="button"><div class="q-option-icon">🏢</div><div class="q-option-text"><div>Companii B2B tech / SaaS</div><div class="q-option-label">Startup-uri, software, servicii profesionale</div></div></button>
+            <button class="q-option" data-val="both" data-q="3" type="button"><div class="q-option-icon">🌐</div><div>Ambele — depinde de client/campanie</div></button>
+            <button class="q-option" data-val="figuring" data-q="3" type="button"><div class="q-option-icon">🤔</div><div>Încă mă gândesc</div></button>
+          </div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(2)">← Înapoi</button>
+            <button class="q-next" id="next-3" disabled>Următorul →</button>
+          </div>
+        </div>
+
+        <!-- Q4: Calitate date -->
+        <div class="q-step" data-q="4">
+          <div class="q-label">Întrebarea 4 din 7</div>
+          <div class="q-text">Cum ai descrie calitatea datelor tale de email?</div>
+          <div class="q-options">
+            <button class="q-option" data-val="excellent" data-q="4" type="button"><div class="q-option-icon">✅</div><div class="q-option-text"><div>Excelentă — sub 2% bounce rate</div><div class="q-option-label">Liste curate, verificate înainte de trimitere</div></div></button>
+            <button class="q-option" data-val="ok" data-q="4" type="button"><div class="q-option-icon">🟡</div><div class="q-option-text"><div>Acceptabilă — 2–5% bounce rate</div><div class="q-option-label">Câteva probleme, dar gestionabile</div></div></button>
+            <button class="q-option" data-val="poor" data-q="4" type="button"><div class="q-option-icon">🔴</div><div class="q-option-text"><div>Slabă — peste 5% bounce rate</div><div class="q-option-label">Reputația domeniului este afectată</div></div></button>
+            <button class="q-option" data-val="unknown" data-q="4" type="button"><div class="q-option-icon">❓</div><div>Nu îmi urmăresc bounce rate-ul</div></button>
+          </div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(3)">← Înapoi</button>
+            <button class="q-next" id="next-4" disabled>Următorul →</button>
+          </div>
+        </div>
+
+        <!-- Q5: Agenție -->
+        <div class="q-step" data-q="5">
+          <div class="q-label">Întrebarea 5 din 7</div>
+          <div class="q-text">Rulezi campanii de prospectare pentru mai mulți clienți?</div>
+          <div class="q-options">
+            <button class="q-option" data-val="agency-large" data-q="5" type="button"><div class="q-option-icon">🏗️</div><div class="q-option-text"><div>Da — 5 sau mai mulți clienți</div><div class="q-option-label">Am nevoie de prețuri multi-cont / white-label</div></div></button>
+            <button class="q-option" data-val="agency-small" data-q="5" type="button"><div class="q-option-icon">🏠</div><div class="q-option-text"><div>Da — 1 până la 4 clienți</div><div class="q-option-label">Agenție în creștere</div></div></button>
+            <button class="q-option" data-val="solo" data-q="5" type="button"><div class="q-option-icon">👤</div><div>Nu — doar afacerea mea</div></button>
+          </div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(4)">← Înapoi</button>
+            <button class="q-next" id="next-5" disabled>Următorul →</button>
+          </div>
+        </div>
+
+        <!-- Q6: Frustrare -->
+        <div class="q-step" data-q="6">
+          <div class="q-label">Întrebarea 6 din 7</div>
+          <div class="q-text">Care este cea mai mare frustrare legată de prospectare în prezent?</div>
+          <div class="q-options">
+            <button class="q-option" data-val="cost" data-q="6" type="button"><div class="q-option-icon">💸</div><div>Plătesc prea mult pentru prea puține rezultate</div></button>
+            <button class="q-option" data-val="channels" data-q="6" type="button"><div class="q-option-icon">📡</div><div class="q-option-text"><div>Îmi lipsesc canale pe care vreau să le folosesc</div><div class="q-option-label">Nu pot ajunge la prospecți pe IG, WhatsApp, FB sau Maps</div></div></button>
+            <button class="q-option" data-val="data" data-q="6" type="button"><div class="q-option-icon">📊</div><div class="q-option-text"><div>Calitatea datelor / bounce rate</div><div class="q-option-label">Listele mele „verificate" tot au bounce</div></div></button>
+            <button class="q-option" data-val="bans" data-q="6" type="button"><div class="q-option-icon">🚫</div><div class="q-option-text"><div>Banuri și restricții de cont</div><div class="q-option-label">Banuri pe LinkedIn sau alte platforme sociale</div></div></button>
+            <button class="q-option" data-val="complexity" data-q="6" type="button"><div class="q-option-icon">🧩</div><div>Prea multe instrumente — prea complex</div></button>
+          </div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(5)">← Înapoi</button>
+            <button class="q-next" id="next-6" disabled>Următorul →</button>
+          </div>
+        </div>
+
+        <!-- Q7: Obiectiv -->
+        <div class="q-step" data-q="7">
+          <div class="q-label">Întrebarea 7 din 7</div>
+          <div class="q-text">Care este obiectivul tău principal pentru următoarele 90 de zile?</div>
+          <div class="q-options">
+            <button class="q-option" data-val="meetings" data-q="7" type="button"><div class="q-option-icon">📅</div><div class="q-option-text"><div>Rezerv 20+ întâlniri noi pe lună</div><div class="q-option-label">Creșterea pipeline-ului</div></div></button>
+            <button class="q-option" data-val="cost" data-q="7" type="button"><div class="q-option-icon">✂️</div><div class="q-option-text"><div>Reduc costurile de prospectare la jumătate</div><div class="q-option-label">Aceleași rezultate, mai puține cheltuieli</div></div></button>
+            <button class="q-option" data-val="channels" data-q="7" type="button"><div class="q-option-icon">📡</div><div class="q-option-text"><div>Adaug Instagram / WhatsApp / Facebook</div><div class="q-option-label">Ajung pe canalele pe care concurenții nu sunt</div></div></button>
+            <button class="q-option" data-val="agency" data-q="7" type="button"><div class="q-option-icon">🏗️</div><div class="q-option-text"><div>Construiesc un sistem de agenție multi-client</div><div class="q-option-label">Scalez prospectarea ca serviciu</div></div></button>
+            <button class="q-option" data-val="start" data-q="7" type="button"><div class="q-option-icon">🚀</div><div>Abia încep cu prospectarea</div></button>
+          </div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(6)">← Înapoi</button>
+            <button class="q-next" id="next-7" disabled>Următorul →</button>
+          </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="q-step" data-q="8">
+          <div class="q-label">Aproape gata</div>
+          <div class="q-text">Unde să trimitem rezultatele tale personalizate?</div>
+          <div style="margin-top:8px;margin-bottom:24px;font-size:14px;color:var(--muted)">Scorul tău este deja calculat — introdu datele tale pentru a debloca analiza completă a lipsurilor și recomandările.</div>
+          <div class="q-field"><label>Prenume</label><input class="q-input" id="f-name" type="text" placeholder="Alexandru" /></div>
+          <div class="q-field"><label>Email de serviciu</label><input class="q-input" id="f-email" type="email" placeholder="alex@companiata.ro" /></div>
+          <div class="q-field"><label>Telefon (opțional — pentru follow-up pe WhatsApp)</label><input class="q-input" id="f-phone" type="tel" placeholder="+40 7xx xxx xxx" /></div>
+          <div class="q-nav">
+            <button class="q-back" onclick="goTo(7)">← Înapoi</button>
+            <button class="q-next" id="next-8" onclick="showResults()">Văd Scorul Meu →</button>
+          </div>
+        </div>
+      </div><!-- /quiz-body -->
+
+      <!-- RESULTS -->
+      <div class="results" id="results">
+        <div class="score-display">
+          <div class="score-ring">
+            <canvas id="score-canvas" width="140" height="140"></canvas>
+            <div class="score-inner">
+              <div class="score-val" id="score-val">--</div>
+              <div class="score-unit">/ 100</div>
+            </div>
+          </div>
+          <div class="score-title" id="score-title">Scorul Tău de Prospectare</div>
+          <div class="score-summary" id="score-summary"></div>
+        </div>
+
+        <div class="label-muted" style="margin-bottom:12px">Analiza lipsurilor pe canale</div>
+        <div class="gap-grid" id="gap-grid"></div>
+
+        <div class="label-muted" style="margin:20px 0 12px">Cele 3 puncte cheie ale tale</div>
+        <div class="insights" id="insights"></div>
+
+        <button class="results-cta" onclick="document.getElementById('final-cta').scrollIntoView({behavior:'smooth'})">
+          Închide Aceste Lipsuri cu 1pont →
+        </button>
+        <div class="results-note">Înscrie-te pe lista de acces timpuriu · Prețuri fondatori · Fără angajament</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── CHANNELS ────── -->
+<section class="channels">
+  <div class="wrap">
+    <span class="label" style="display:block;text-align:center;margin-bottom:12px">Cinci canale. O singură platformă.</span>
+    <h2 class="display d-lg section-head">Fiecare canal pe care<br>concurenții tăi îl <span class="accent">evită.</span></h2>
+    <p class="section-sub">Construit pe API-uri oficiale — fără banuri pentru scraping, fără restricții de cont, fără zone gri.</p>
+    <div class="ch-grid">
+      <div class="ch-card">
+        <span class="ch-emoji">🗺️</span>
+        <div class="ch-name">Listări Locale</div>
+        <div class="ch-desc">200M+ afaceri locale din date publice disponibile. Filtrare după categorie, locație, rating și prezență web.</div>
+        <div class="ch-stat">
+          <div class="ch-stat-num mint">200M+</div>
+          <div class="ch-stat-label">afaceri indexate</div>
+        </div>
+      </div>
+      <div class="ch-card">
+        <span class="ch-emoji">✉️</span>
+        <div class="ch-name">Email</div>
+        <div class="ch-desc">Contacte verificate, warmup inclus, secvențe multi-pas. Fără instrumente terțe de verificare.</div>
+        <div class="ch-stat">
+          <div class="ch-stat-num" style="color:var(--text)">4,1%</div>
+          <div class="ch-stat-label">rată medie de răspuns</div>
+        </div>
+      </div>
+      <div class="ch-card featured">
+        <span class="ch-emoji">📸</span>
+        <div class="ch-name">Instagram DM</div>
+        <div class="ch-desc">API oficial Meta. Secvențe outbound conforme către conturi de business. Canalul pe care nimeni nu concurează.</div>
+        <div class="ch-stat">
+          <div class="ch-stat-num accent">7–20%</div>
+          <div class="ch-stat-label">rată de conversie</div>
+        </div>
+      </div>
+      <div class="ch-card featured">
+        <span class="ch-emoji">💬</span>
+        <div class="ch-name">Facebook Messenger</div>
+        <div class="ch-desc">Graph API conform. 2B utilizatori activi lunari. Pagini de business contactate direct.</div>
+        <div class="ch-stat">
+          <div class="ch-stat-num" style="color:var(--warn)">2B</div>
+          <div class="ch-stat-label">utilizatori activi lunari</div>
+        </div>
+      </div>
+      <div class="ch-card featured">
+        <span class="ch-emoji">📲</span>
+        <div class="ch-name">WhatsApp</div>
+        <div class="ch-desc">API WhatsApp Business. Outreach B2B bazat pe template-uri. Dominant în România, LATAM și EMEA.</div>
+        <div class="ch-stat">
+          <div class="ch-stat-num mint">60%+</div>
+          <div class="ch-stat-label">rată de deschidere (msg. Business)</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;text-align:center">
+      <span class="pill pill-ice" style="margin:4px">✓ API-uri oficiale Meta — risc zero de ban</span>
+      <span class="pill pill-ice" style="margin:4px">✓ Conformitate integrată (dezabonare, suprimare)</span>
+      <span class="pill pill-ice" style="margin:4px">✓ Inbox unificat pentru răspunsuri pe toate canalele</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── COMPARISON ────── -->
+<section class="comparison">
+  <div class="wrap">
+    <span class="label" style="display:block;text-align:center;margin-bottom:12px">Cum ne comparăm</span>
+    <h2 class="display d-lg section-head">Nimeni nu acoperă <span class="accent">toate cinci.</span></h2>
+    <p class="section-sub">Cel mai apropiat competitor (Reply.io) are Instagram și Facebook pe roadmap. Nelivrat. Inactiv.</p>
+    <div class="comp-table-wrap">
+      <table class="comp">
+        <thead>
+          <tr>
+            <th>Instrument</th>
+            <th>Email</th>
+            <th>LinkedIn</th>
+            <th>Date Locale</th>
+            <th>Instagram DM</th>
+            <th>Facebook DM</th>
+            <th>WhatsApp</th>
+            <th class="hl">Agenție preț fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Apollo.io</td><td><span class="sym-yes">✓</span></td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td></tr>
+          <tr><td>Instantly</td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td></tr>
+          <tr><td>Lemlist</td><td><span class="sym-yes">✓</span></td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td></tr>
+          <tr><td>Phantombuster</td><td><span class="sym-no">—</span></td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td><td><span class="sym-soon">risc ban</span></td><td><span class="sym-soon">risc ban</span></td><td><span class="sym-no">—</span></td><td><span class="sym-no">—</span></td></tr>
+          <tr><td>Reply.io</td><td><span class="sym-yes">✓</span></td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td><td><span class="sym-soon">în curând</span></td><td><span class="sym-soon">în curând</span></td><td><span class="sym-yes">✓</span></td><td><span class="sym-no">—</span></td></tr>
+          <tr class="hl-row">
+            <td>1pont</td>
+            <td><span class="sym-yes">✓</span></td>
+            <td><span style="color:var(--muted);font-size:12px">opț.</span></td>
+            <td><span class="sym-yes">✓</span></td>
+            <td><span class="sym-yes">✓</span></td>
+            <td><span class="sym-yes">✓</span></td>
+            <td><span class="sym-yes">✓</span></td>
+            <td><span class="sym-yes">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── PRICING ────── -->
+<section class="pricing">
+  <div class="wrap">
+    <span class="label" style="display:block;text-align:center;margin-bottom:12px">Prețuri</span>
+    <h2 class="display d-lg section-head">Un singur preț fix.<br><span class="accent">Fără credite. Fără trucuri.</span></h2>
+    <p class="section-sub">Aplicăm tarife fixe deoarece sistemele opace de credite care expiră lunar sunt un model de business defect deghizat în software.</p>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-tier">Solo</div>
+        <div class="price-amt">$79</div>
+        <div class="price-period">/lună fix · anulezi oricând</div>
+        <div class="price-desc">Pentru fondatori și echipe mici de vânzări care fac propria prospectare.</div>
+        <ul class="price-features">
+          <li><span class="check">✓</span>Date locale de afaceri</li>
+          <li><span class="check">✓</span>Secvențe email + warmup</li>
+          <li><span class="check">✓</span>Instagram + Facebook DM</li>
+          <li><span class="check">✓</span>WhatsApp Business</li>
+          <li><span class="check">✓</span>Verificare email integrată</li>
+          <li><span class="check">✓</span>Pipeline CRM de bază</li>
+        </ul>
+        <button class="price-btn price-btn-outline">Înscrie-te pe Listă</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tier">Agenție</div>
+        <div class="price-amt accent">$199</div>
+        <div class="price-period">/lună fix · clienți nelimitați</div>
+        <div class="price-desc">Tot ce include Solo, plus arhitectură multi-workspace și rapoarte white-label pentru clienții tăi.</div>
+        <ul class="price-features">
+          <li><span class="check">✓</span>Tot ce include Solo</li>
+          <li><span class="check">✓</span>Workspace-uri nelimitate</li>
+          <li><span class="check">✓</span>Rapoarte white-label</li>
+          <li><span class="check">✓</span>Acces membrii echipei</li>
+          <li><span class="check">✓</span>Izolare sub-conturi</li>
+          <li><span class="check">✓</span>Onboarding prioritar</li>
+        </ul>
+        <button class="price-btn price-btn-flame">Înscrie-te (Preț Fondatori)</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Stack-ul actual</div>
+        <div class="price-amt" style="color:var(--muted)">$800+</div>
+        <div class="price-period">/lună · minimum 5 instrumente</div>
+        <div class="price-desc">Cât plătești acum pentru Apollo + Clay + Instantly + Lemlist + instrumente lipici.</div>
+        <ul class="price-features">
+          <li><span class="xmark">✕</span>Fără date locale de afaceri</li>
+          <li><span class="xmark">✕</span>Fără Instagram DM</li>
+          <li><span class="xmark">✕</span>Fără Facebook Messenger</li>
+          <li><span class="xmark">✕</span>Fără WhatsApp</li>
+          <li><span class="xmark">✕</span>Creditele expiră lunar</li>
+          <li><span class="xmark">✕</span>32–38% bounce rate</li>
+        </ul>
+        <button class="price-btn" style="background:var(--dim);color:var(--muted);cursor:default">Continuă să plătești mai mult</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── FAQ ────── -->
+<section class="faq">
+  <div class="wrap">
+    <span class="label" style="display:block;text-align:center;margin-bottom:12px">Întrebări</span>
+    <h2 class="display d-md section-head">Întrebări frecvente</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Prospectarea pe Instagram / Facebook / WhatsApp este conformă legal?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Da. 1pont folosește API-ul oficial Meta Graph și API-ul WhatsApp Business — nu scraping prin browser sau deturnare de sesiune. Instagram DM prin API-ul oficial urmează fereastra de mesagerie de 24 de ore a Meta și regulile de dezabonare. Construim garduri de conformitate (gestionarea dezabonărilor, limitare rată, liste de suprimare) în fiecare canal implicit.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Pot primi ban pe LinkedIn folosind 1pont?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">1pont este construit cu LinkedIn opțional — focusul nostru este date locale de afaceri, Instagram, Facebook, WhatsApp și email. Aplicarea restricțiilor de automatizare de pe LinkedIn se intensifică (23% rată de restricție în 90 de zile pentru utilizatorii de automatizare). Am construit deliberat în jurul acestui risc, nu în el. Poți conecta LinkedIn ca un canal opțional, dar nu este sursa noastră principală de date sau mesagerie.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Cum diferă 1pont de Phantombuster?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Phantombuster este un kit de scraping pentru utilizatori tehnici — extrage date din platformele sociale prin automatizare de browser, ceea ce prezintă risc ridicat de ban pe Instagram și Facebook. 1pont folosește API-uri oficiale (fără risc de ban), include secvențe de email, verificare integrată a contactelor, WhatsApp Business și un pipeline CRM — totul pe o platformă la preț fix. Fără cod necesar, fără scraping de sesiune, fără facturare per execuție.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Ce include „verificarea email integrată"?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Fiecare contact îmbogățit prin 1pont este verificat automat pentru livrabilitate înainte de a intra în orice secvență. Nu plătești separat pentru NeverBounce, ZeroBounce sau instrumente similare. Verificarea noastră internă rulează în etapa de îmbogățire — nu ca o gândire ulterioară. Acesta este motivul principal pentru care exporturile Apollo au bounce la 32–38%, în timp ce contactele sursate de 1pont țintesc sub 3%.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Când se lansează 1pont?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Suntem în beta privată acum cu un mic grup de agenții și echipe de vânzări. Lista de așteptare se deschide mai întâi pentru membrii cu acces timpuriu, cu prețurile de fondator blocate pentru 12 luni. Reply.io a anunțat funcționalități concurente pentru Instagram/Facebook — nelivrate încă. Obiectivul nostru este să fim live și testați înainte ca ei să livreze.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── FINAL CTA ────── -->
+<section class="final-cta" id="final-cta">
+  <div class="wrap">
+    <span class="label" style="display:block;margin-bottom:16px">Acces timpuriu</span>
+    <h2 class="display d-lg">Canalele pe care nimeni<br>altcineva nu le folosește — <span class="accent">încă.</span></h2>
+    <div class="rule"></div>
+    <p style="color:var(--muted);max-width:480px;margin:0 auto;font-size:clamp(14px,1.4vw,17px)">
+      Reply.io construiește integrări pentru Instagram și Facebook. Nu au livrat încă. Înscrie-te pe lista de așteptare și fii primul pe canalele pe care concurenții tăi se vor grăbi să le adauge anul viitor.
+    </p>
+    <div class="final-input-row">
+      <input class="final-input" type="email" placeholder="tu@email.ro" />
+      <button class="final-btn">Înscrie-te pe Listă</button>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <span class="pill pill-ice">✓ Prețuri fondatori blocate 12 luni</span>
+      <span class="pill pill-flame">✓ Influențează roadmap-ul</span>
+      <span class="pill-dim pill" style="color:var(--muted)">✓ Anulezi oricând</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="nav-logo">
+      <div class="pont-dot"></div>
+      <span class="nav-name">1pont</span>
+    </div>
+    <div class="foot-note">© 2026 1pont. Construit pe API-uri oficiale Meta. Conform GDPR. Conform CAN-SPAM.</div>
+  </div>
+</footer>
+
+<script>
+  // ── SHEETS CONFIG ──────────────────────────────────────
+  // Deploy a Google Apps Script web app (see docs/marketing/sheets-script.js)
+  // and paste the deployment URL here:
+  const SHEET_ENDPOINT = '';
+
+  async function saveAnswers(payload) {
+    if (!SHEET_ENDPOINT) return;
+    try {
+      await fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (e) { /* non-blocking */ }
+  }
+
+  // ── THEME ──────────────────────────────────────────────
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-btn');
+  const saved = localStorage.getItem('1pont-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  btn.addEventListener('click', () => {
+    const cur = root.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('1pont-theme', next);
+  });
+
+  // ── QUIZ STATE ─────────────────────────────────────────
+  const answers = { channels: [], spend: null, target: null, data: null, agency: null, frustration: null, goal: null };
+  let currentQ = 1;
+
+  function goTo(n) {
+    document.querySelector(`[data-q="${currentQ}"]`).classList.remove('active');
+    currentQ = n;
+    document.querySelector(`[data-q="${n}"]`).classList.add('active');
+    updateProgress(n);
+  }
+
+  function updateProgress(q) {
+    const pct = Math.round((q / 8) * 100);
+    document.getElementById('q-progress').style.width = pct + '%';
+    document.getElementById('q-counter').textContent = q <= 7 ? `Î${q} din 7` : 'Aproape gata';
+  }
+
+  // Multi-select Q1
+  document.querySelectorAll('[data-q="1"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('selected');
+      const val = btn.dataset.val;
+      if (answers.channels.includes(val)) {
+        answers.channels = answers.channels.filter(v => v !== val);
+      } else {
+        answers.channels.push(val);
+      }
+    });
+  });
+
+  document.getElementById('next-1').addEventListener('click', () => goTo(2));
+
+  // Single-select Q2–Q7
+  [2,3,4,5,6,7].forEach(q => {
+    const keys = ['spend','target','data','agency','frustration','goal'];
+    const key = keys[q-2];
+    document.querySelectorAll(`[data-q="${q}"]`).forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[key] = btn.dataset.val;
+        document.getElementById(`next-${q}`).disabled = false;
+      });
+    });
+    document.getElementById(`next-${q}`).addEventListener('click', () => goTo(q + 1));
+  });
+
+  // ── SCORING ────────────────────────────────────────────
+  const channelWeights = { email: 15, linkedin: 5, instagram: 22, facebook: 18, whatsapp: 18, maps: 22 };
+
+  function calcScore() {
+    let score = 0;
+    const used = answers.channels;
+    Object.entries(channelWeights).forEach(([ch, w]) => {
+      if (used.includes(ch)) score += w;
+    });
+    if (answers.data === 'excellent') score = Math.min(100, score + 5);
+    return Math.min(100, Math.max(2, score));
+  }
+
+  function getScoreMeta(score) {
+    if (score >= 75) return {
+      title: 'Prospectare Puternică',
+      color: '#12C4A2',
+      summary: 'Folosești majoritatea canalelor potrivite. Lipsul este probabil costul și eficiența — 1pont poate consolida stack-ul tău la o fracțiune din ce plătești acum.'
+    };
+    if (score >= 45) return {
+      title: 'Lipsuri Semnificative Detectate',
+      color: '#D4900F',
+      summary: 'Ajungi la unii prospecți, dar îți lipsesc canalele cu cea mai mare rată de conversie. Concurenții care adaugă Instagram, Facebook și WhatsApp te vor depăși în ratele de răspuns.'
+    };
+    return {
+      title: 'Oportunitate Majoră în Față',
+      color: '#FF4D25',
+      summary: 'Ajungi la o fracțiune din prospecții tăi potențiali. Vestea bună: canalele care îți lipsesc au cea mai mică concurență și cele mai mari rate de conversie în B2B.'
+    };
+  }
+
+  function buildGapGrid() {
+    const channels = [
+      { key:'email', icon:'✉️', name:'Email' },
+      { key:'instagram', icon:'📸', name:'Instagram' },
+      { key:'facebook', icon:'💬', name:'Facebook' },
+      { key:'whatsapp', icon:'📲', name:'WhatsApp' },
+      { key:'maps', icon:'🗺️', name:'Maps' },
+    ];
+    const grid = document.getElementById('gap-grid');
+    grid.innerHTML = '';
+    channels.forEach(ch => {
+      const has = answers.channels.includes(ch.key);
+      const div = document.createElement('div');
+      div.className = 'gap-ch ' + (has ? 'has' : 'missing');
+      div.innerHTML = `<div class="gap-ch-icon">${ch.icon}</div>
+        <div class="gap-ch-name">${ch.name}</div>
+        <div class="gap-badge ${has ? 'has' : 'missing'}">${has ? 'Activ' : 'Lipsă'}</div>`;
+      grid.appendChild(div);
+    });
+  }
+
+  function buildInsights() {
+    const list = [];
+    const missing = ['email','instagram','facebook','whatsapp','maps'].filter(c => !answers.channels.includes(c));
+
+    if (missing.includes('instagram') || missing.includes('facebook')) {
+      list.push({ icon: '📡', text: '<strong>Lipsă canal:</strong> Instagram DM convertește la 7–20% pentru B2B. Mai puțin de 1% din afaceri le trimit. Poți deține acest canal înainte ca concurenții tăi să-l descopere.' });
+    }
+    if (missing.includes('whatsapp')) {
+      list.push({ icon: '📲', text: '<strong>Lipsă WhatsApp:</strong> Mesajele WhatsApp Business ating rate de deschidere de 60%+ — mai mari decât orice alt canal. Dominant în România, LATAM, EMEA și în serviciile locale.' });
+    }
+    if (missing.includes('maps')) {
+      list.push({ icon: '🗺️', text: '<strong>Lipsă sursă date:</strong> Există 200M+ listări structurate de afaceri locale în date publice disponibile. Majoritatea concurenților se concentrează pe LinkedIn. Aproape nimeni nu folosește datele locale de afaceri — este sursa cu cel mai mare semnal pe care nimeni nu o exploatează pentru outreach.' });
+    }
+    if (answers.data === 'poor' || answers.data === 'unknown') {
+      list.push({ icon: '📊', text: '<strong>Risc calitate date:</strong> Bounce rate-ul tău îți dăunează reputației de expeditor. Verificarea integrată 1pont elimină fluxul „export → verifică → reimport" și menține bounce-urile sub 3%.' });
+    }
+    if (answers.spend === 'high' || answers.spend === 'max') {
+      list.push({ icon: '💸', text: '<strong>Optimizare costuri:</strong> La $400–$1.000+/lună pe 4–5 instrumente care nu acoperă Instagram, Facebook, WhatsApp sau Maps — plătești de 4–10x mai mult pentru o fracțiune din capabilități.' });
+    }
+    if (answers.agency === 'agency-large' || answers.agency === 'agency-small') {
+      list.push({ icon: '🏗️', text: '<strong>Arhitectură agenție:</strong> Instrumentele actuale (Lemlist, Apollo) facturează per licență — $870+/lună pentru 10 clienți. Planul Agency 1pont este fix $199/lună cu workspace-uri nelimitate și raportare white-label.' });
+    }
+    if (list.length < 3) {
+      list.push({ icon: '🎯', text: '<strong>Oportunitate consolidare:</strong> Chiar și o configurare puternică de outreach beneficiază de un inbox unificat pe toate canalele, un singur pipeline și un preț fix — în loc de 5 instrumente cu login-uri separate și sisteme de credite.' });
+    }
+
+    const container = document.getElementById('insights');
+    container.innerHTML = '';
+    list.slice(0,3).forEach(item => {
+      const d = document.createElement('div');
+      d.className = 'insight';
+      d.innerHTML = `<div class="insight-icon">${item.icon}</div><div>${item.text}</div>`;
+      container.appendChild(d);
+    });
+  }
+
+  function drawScoreRing(score, color) {
+    const canvas = document.getElementById('score-canvas');
+    const ctx = canvas.getContext('2d');
+    const cx = 70, cy = 70, r = 56, lw = 10;
+    ctx.clearRect(0,0,140,140);
+    ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,2*Math.PI,false);
+    ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = lw; ctx.stroke();
+    const end = -Math.PI/2 + (score/100)*2*Math.PI;
+    ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,end,false);
+    ctx.strokeStyle = color; ctx.lineWidth = lw;
+    ctx.lineCap = 'round'; ctx.stroke();
+  }
+
+  function showResults() {
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('f-email').focus();
+      return;
+    }
+
+    const score = calcScore();
+    saveAnswers({
+      token: 'd891520657a0ab45f099a001465ad8d9dca866a4018401e2bde0971c9fdbef19',
+      timestamp: new Date().toISOString(),
+      name, email, phone, score,
+      channels: answers.channels.join(', '),
+      spend: answers.spend,
+      target: answers.target,
+      dataQuality: answers.data,
+      agency: answers.agency,
+      frustration: answers.frustration,
+      goal: answers.goal,
+      lang: 'ro',
+    });
+    const meta = getScoreMeta(score);
+
+    document.getElementById('quiz-body').style.display = 'none';
+    const results = document.getElementById('results');
+    results.classList.add('show');
+
+    document.getElementById('score-val').textContent = score;
+    document.getElementById('score-val').style.color = meta.color;
+    document.getElementById('score-title').textContent = meta.title;
+    document.getElementById('score-summary').textContent = (name ? name + ', ' : '') + meta.summary;
+
+    document.getElementById('q-progress').style.width = '100%';
+    document.getElementById('q-counter').textContent = 'Complet';
+
+    drawScoreRing(score, meta.color);
+    buildGapGrid();
+    buildInsights();
+
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── FAQ ────────────────────────────────────────────────
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
